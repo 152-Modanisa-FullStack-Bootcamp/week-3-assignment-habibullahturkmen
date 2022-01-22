@@ -26,79 +26,51 @@ describe("App.vue", () => {
     });
 
     // 3. notificationArea class check based on getCount value
+    test("notificationArea class check based on getCount value", () => {
 
-    // looks for safe class
-    describe("safe class", () => {
-        beforeEach(() => {
-            state.count = 0;
-        })
-        test("should include the safe", () => {
-            const safe = "safe";
-            const safeClass = findClass(wrapper, safe);
-            expect(safeClass).toEqual(safe);
-        });
-    });
+        // looks for safe class
+        const safe = "safe";
+        const safeClass = findClass(wrapper, safe);
+        expect(safeClass).toEqual(safe);
 
-    // looks for normal class
-    describe("normal class", () => {
-        beforeEach(() => {
-            state.count = 5;
-        })
-        test("should include the normal", () => {
-            const normal = "normal";
-            const normalClass = findClass(wrapper, normal);
-            expect(normalClass).toEqual(normal);
-        });
-    });
+        // looks for normal class
+        state.count = 5;
+        wrapper = mountComponent(App);
+        const normal = "normal";
+        const normalClass = findClass(wrapper, normal);
+        expect(normalClass).toEqual(normal);
 
-    // looks for danger class
-    describe("danger class", () => {
-        beforeEach(() => {
-            state.count = 10;
-        })
-        test("should include the danger", () => {
-            const danger = "danger";
-            const dangerClass = findClass(wrapper, danger);
-            expect(dangerClass).toEqual(danger);
-        });
+        // looks for danger class
+        state.count = 10;
+        wrapper = mountComponent(App);
+        const danger = "danger";
+        const dangerClass = findClass(wrapper, danger);
+        expect(dangerClass).toEqual(danger);
     });
 
     // 4. notificationArea text message check
+    test("notificationArea text message check", () => {
 
-    // Looks for safe text
-    describe("safe text", () => {
-        beforeEach(() => {
-            state.count = 0;
-        });
-        test("notification area message should include (So safe)", () => {
-            const message = `So safe. Case count is ${state.count}k`;
-            const safeText = findText(wrapper, message);
-            expect(safeText).toEqual(message);
-        });
-    });
+        // Looks for safe text
+        state.count = 0;
+        wrapper = mountComponent(App);
+        const safeMessage = `So safe. Case count is ${state.count}k`;
+        const safeText = findText(wrapper, safeMessage);
+        expect(safeText).toEqual(safeMessage);
 
-    // Looks for normal text
-    describe("normal text", () => {
-        beforeEach(() => {
-            state.count = 5;
-        });
-        test("notification area message should include (Life is normal)", () => {
-            const message = `Life is normal. Case count is ${state.count}k`;
-            const normalText = findText(wrapper, message);
-            expect(normalText).toEqual(message);
-        });
-    });
+        // Looks for normal text
+        state.count = 5;
+        wrapper = mountComponent(App);
+        const normalMessage = `Life is normal. Case count is ${state.count}k`;
+        const normalText = findText(wrapper, normalMessage);
+        expect(normalText).toEqual(normalMessage);
 
-    // Looks for danger text
-    describe("danger text", () => {
-        beforeEach(() => {
-            state.count = 10;
-        });
-        test("notification area message should include (Danger!!!)", () => {
-            const message = `Danger!!! Case count is ${state.count}k`;
-            const dangerText = findText(wrapper, message);
-            expect(dangerText).toEqual(message);
-        });
+        // Looks for danger text
+        state.count = 10;
+        wrapper = mountComponent(App);
+        const message = `Danger!!! Case count is ${state.count}k`;
+        const dangerText = findText(wrapper, message);
+        expect(dangerText).toEqual(message);
     });
 });
 
