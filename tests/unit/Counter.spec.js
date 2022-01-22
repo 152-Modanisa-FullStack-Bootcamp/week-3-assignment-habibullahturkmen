@@ -37,6 +37,7 @@ describe("Counter.vue", () => {
         state.count = 0;
         triggerButton(increaseButton, 5);
         expect(state.count).toEqual(5);
+        // expect(wrapper.vm.$store.state.count).toEqual(5); // Optional expect
     });
 
     // 5. Decrease button functionality check
@@ -47,10 +48,11 @@ describe("Counter.vue", () => {
         state.count = 5;
         triggerButton(decreaseButton, 5);
         expect(state.count).toEqual(0);
+        // expect(wrapper.vm.$store.state.count).toEqual(0); // Optional expect
     });
 
     // 6. increase + decrease functionality check together
-    test("Increase button should work", () => {
+    test("increase + decrease button should work", () => {
         // finds the Increase button
         let increaseButton = findButton(wrapper, "Increase");
         // finds the Decrease button
@@ -61,17 +63,19 @@ describe("Counter.vue", () => {
         // Triggers the Decrease button five times
         triggerButton(decreaseButton, 5);
         expect(state.count).toEqual(0);
+        // expect(wrapper.vm.$store.state.count).toEqual(0); // Optional expect
     });
 
     // 7. Count text show check
     test("Count text should show", () => {
-        const text = wrapper.find("span").element.textContent;
+        const text = wrapper.find("span").text();
         expect(text).toEqual(`${state.count}k`);
+        expect(text).toEqual(`${wrapper.vm.$store.state.count}k`); // Optional expect
     });
 
 });
 
-// function for shallow mounting the Counter component using localVue
+// shallow mounts the Counter component using localVue and store
 function shallowMountComponent(Component) {
     const localVue = createLocalVue();
     localVue.use(Vuex);
@@ -90,7 +94,7 @@ function shallowMountComponent(Component) {
 function findButton(wrapper, button) {
     let btn = wrapper.findAll("button");
     for (let i = 0; i < btn.length; i++) {
-        if (btn.at(i).element.textContent === button) {
+        if (btn.at(i).text() === button) {
             return btn.at(i);
         }
     }
@@ -100,8 +104,8 @@ function findButton(wrapper, button) {
 function findButtonText(wrapper, button) {
     let btn = wrapper.findAll("button");
     for (let i = 0; i < btn.length; i++) {
-        if (btn.at(i).element.textContent === button) {
-            return btn.at(i).element.textContent;
+        if (btn.at(i).text() === button) {
+            return btn.at(i).text();
         }
     }
 }

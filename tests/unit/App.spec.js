@@ -26,7 +26,7 @@ describe("App.vue", () => {
     });
 
     // 3. notificationArea class check based on getCount value
-    test("notificationArea class check based on getCount value", () => {
+    test("notificationArea class check based on getCount value", async () => {
 
         // looks for safe class
         const safe = "safe";
@@ -35,46 +35,46 @@ describe("App.vue", () => {
 
         // looks for normal class
         state.count = 5;
-        wrapper = mountComponent(App);
+        await wrapper.vm.$nextTick();
         const normal = "normal";
         const normalClass = findClass(wrapper, normal);
         expect(normalClass).toEqual(normal);
 
         // looks for danger class
         state.count = 10;
-        wrapper = mountComponent(App);
+        await wrapper.vm.$nextTick();
         const danger = "danger";
         const dangerClass = findClass(wrapper, danger);
         expect(dangerClass).toEqual(danger);
     });
 
     // 4. notificationArea text message check
-    test("notificationArea text message check", () => {
+    test("notificationArea text message check", async () => {
 
         // Looks for safe text
         state.count = 0;
-        wrapper = mountComponent(App);
+        await wrapper.vm.$nextTick();
         const safeMessage = `So safe. Case count is ${state.count}k`;
         const safeText = findText(wrapper, safeMessage);
         expect(safeText).toEqual(safeMessage);
 
         // Looks for normal text
         state.count = 5;
-        wrapper = mountComponent(App);
+        await wrapper.vm.$nextTick();
         const normalMessage = `Life is normal. Case count is ${state.count}k`;
         const normalText = findText(wrapper, normalMessage);
         expect(normalText).toEqual(normalMessage);
 
         // Looks for danger text
         state.count = 10;
-        wrapper = mountComponent(App);
+        await wrapper.vm.$nextTick();
         const message = `Danger!!! Case count is ${state.count}k`;
         const dangerText = findText(wrapper, message);
         expect(dangerText).toEqual(message);
     });
 });
 
-// function for mounting App.vue component using localVue
+// mounts App.vue component using localVue and store
 function mountComponent(Component) {
     const localVue = createLocalVue();
     localVue.use(Vuex);
@@ -89,22 +89,20 @@ function mountComponent(Component) {
     });
 }
 
-// finds notificationArea class
+// finds notificationArea's class
 function findClass(wrapper, Class) {
-    let divs = wrapper.findAll("div");
-    for (let i = 0; i < divs.length; i++) {
-        if (divs.at(i).classes().includes(Class)) {
-            return divs.at(i).classes().filter(n => n === Class).toString();
-        }
+    let notificationArea = wrapper.find(".notificationArea")
+    if (notificationArea.classes().includes(Class)) {
+        return Class;
     }
 }
 
-// finds notificationArea text message
+// finds notificationArea's text message
 function findText(wrapper, message) {
     let divs = wrapper.findAll("div");
     for (let i = 0; i < divs.length; i++) {
-        if (divs.at(i).element.textContent.trim() === message) {
-            return divs.at(i).element.textContent.trim();
+        if (divs.at(i).text() === message) {
+            return divs.at(i).text();
         }
     }
 }
