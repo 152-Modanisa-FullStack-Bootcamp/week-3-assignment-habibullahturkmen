@@ -1,29 +1,15 @@
-import {createLocalVue, shallowMount} from "@vue/test-utils";
+import {createLocalVue, mount} from "@vue/test-utils";
 import App from "../../src/App";
 import Vuex from "vuex";
-import {state, getters} from "../../src/store";
-
-// function for shallow mounting the Counter component using localVue
-function shallowMountComponent(Component) {
-
-    const localVue = createLocalVue();
-    localVue.use(Vuex);
-
-    return shallowMount(Component, {
-        localVue,
-        store: new Vuex.Store({
-            state,
-            getters
-        })
-    });
-}
+import {state, getters, mutations, actions} from "../../src/store";
 
 // Test case for App.vue
 describe("App.vue", () => {
-    // shallow mounts App.vue before each test.
+
+    // mounts App.vue before each test.
     let wrapper;
     beforeEach(() => {
-        wrapper = shallowMountComponent(App);
+        wrapper = mountComponent(App);
     });
 
     // 1. h1 exists
@@ -47,8 +33,9 @@ describe("App.vue", () => {
             state.count = 0;
         })
         test("should include the safe", () => {
-            let div = wrapper.findAll("div").at(2);
-            expect(div.classes()).toContain("safe");
+            const safe = "safe";
+            const safeClass = findClass(wrapper, safe);
+            expect(safeClass).toEqual(safe);
         });
     });
 
@@ -58,8 +45,9 @@ describe("App.vue", () => {
             state.count = 5;
         })
         test("should include the normal", () => {
-            let div = wrapper.findAll("div").at(2);
-            expect(div.classes()).toContain("normal");
+            const normal = "normal";
+            const normalClass = findClass(wrapper, normal);
+            expect(normalClass).toEqual(normal);
         });
     });
 
@@ -69,8 +57,9 @@ describe("App.vue", () => {
             state.count = 10;
         })
         test("should include the danger", () => {
-            let div = wrapper.findAll("div").at(2);
-            expect(div.classes()).toContain("danger");
+            const danger = "danger";
+            const dangerClass = findClass(wrapper, danger);
+            expect(dangerClass).toEqual(danger);
         });
     });
 
@@ -82,8 +71,9 @@ describe("App.vue", () => {
             state.count = 0;
         });
         test("notification area message should include (So safe)", () => {
-            const message = wrapper.findAll("div").at(2).element.textContent.trim();
-            expect(message).toEqual(`So safe. Case count is ${state.count}k`);
+            const message = `So safe. Case count is ${state.count}k`;
+            const safeText = findText(wrapper, message);
+            expect(safeText).toEqual(message);
         });
     });
 
@@ -93,8 +83,9 @@ describe("App.vue", () => {
             state.count = 5;
         });
         test("notification area message should include (Life is normal)", () => {
-            const message = wrapper.findAll("div").at(2).element.textContent.trim();
-            expect(message).toEqual(`Life is normal. Case count is ${state.count}k`);
+            const message = `Life is normal. Case count is ${state.count}k`;
+            const normalText = findText(wrapper, message);
+            expect(normalText).toEqual(message);
         });
     });
 
@@ -104,10 +95,44 @@ describe("App.vue", () => {
             state.count = 10;
         });
         test("notification area message should include (Danger!!!)", () => {
-            const message = wrapper.findAll("div").at(2).element.textContent.trim();
-            expect(message).toEqual(`Danger!!! Case count is ${state.count}k`);
-
+            const message = `Danger!!! Case count is ${state.count}k`;
+            const dangerText = findText(wrapper, message);
+            expect(dangerText).toEqual(message);
         });
     });
-
 });
+
+// function for mounting App.vue component using localVue
+function mountComponent(Component) {
+    const localVue = createLocalVue();
+    localVue.use(Vuex);
+    return mount(Component, {
+        localVue,
+        store: new Vuex.Store({
+            state,
+            getters,
+            mutations,
+            actions
+        })
+    });
+}
+
+// finds notificationArea class
+function findClass(wrapper, Class) {
+    let divs = wrapper.findAll("div");
+    for (let i = 0; i < divs.length; i++) {
+        if (divs.at(i).classes().includes(Class)) {
+            return divs.at(i).classes().filter(n => n === Class).toString();
+        }
+    }
+}
+
+// finds notificationArea text message
+function findText(wrapper, message) {
+    let divs = wrapper.findAll("div");
+    for (let i = 0; i < divs.length; i++) {
+        if (divs.at(i).element.textContent.trim() === message) {
+            return divs.at(i).element.textContent.trim();
+        }
+    }
+}

@@ -3,23 +3,6 @@ import Counter from "../../src/Counter";
 import Vuex from "vuex";
 import {state, getters, mutations, actions} from "../../src/store"
 
-// function for shallow mounting the Counter component using localVue
-function shallowMountComponent(Component) {
-
-    const localVue = createLocalVue();
-    localVue.use(Vuex);
-
-    return shallowMount(Component, {
-        localVue,
-        store: new Vuex.Store({
-            state,
-            getters,
-            mutations,
-            actions
-        })
-    });
-}
-
 // Test case for Counter.vue
 describe("Counter.vue", () => {
 
@@ -36,89 +19,48 @@ describe("Counter.vue", () => {
 
     // 2. Increase button exist check
     test("The increase button should exist", () => {
-        let button = wrapper.findAll("button");
-        for (let i = 0; i < button.length; i++) {
-            if (button.at(i).element.textContent === "Increase") {
-                button = button.at(i).element.textContent;
-                break;
-            }
-        }
-        expect(button).toEqual("Increase");
+        let increaseButton = findButtonText(wrapper, "Increase");
+        expect(increaseButton).toEqual("Increase");
     });
 
     // 3. Decrease button exist check
     test("The decrease button should exist", () => {
-        let button = wrapper.findAll("button");
-        for (let i = 0; i < button.length; i++) {
-            if (button.at(i).element.textContent === "Decrease") {
-                button = button.at(i).element.textContent;
-                break;
-            }
-        }
-        expect(button).toEqual("Decrease");
+        let decreaseButton = findButtonText(wrapper, "Decrease");
+        expect(decreaseButton).toEqual("Decrease");
     });
 
     // 4. Increase button functionality check
     test("Increase button should work", () => {
-        let button = wrapper.findAll("button");
-        for (let i = 0; i < button.length; i++) {
-            if (button.at(i).element.textContent === "Increase") {
-                button = button.at(i);
-            }
-        }
+        // finds the Increase button
+        let increaseButton = findButton(wrapper, "Increase");
         // Triggers the Increase button five times
         state.count = 0;
-        let count = 0;
-        for (let i = 0; i < 5; i++) {
-            button.trigger("click");
-            count++;
-        }
-        expect(state.count).toEqual(count);
+        triggerButton(increaseButton, 5);
+        expect(state.count).toEqual(5);
     });
 
     // 5. Decrease button functionality check
     test("Decrease button should work", () => {
-        let button = wrapper.findAll("button");
-        for (let i = 0; i < button.length; i++) {
-            if (button.at(i).element.textContent === "Decrease") {
-                button = button.at(i);
-            }
-        }
+        // finds the Decrease button
+        let decreaseButton = findButton(wrapper, "Decrease");
         // Triggers the Decrease button five times
         state.count = 5;
-        let count = 5;
-        for (let i = 0; i < 5; i++) {
-            button.trigger("click");
-            count--;
-        }
-        expect(state.count).toEqual(count);
+        triggerButton(decreaseButton, 5);
+        expect(state.count).toEqual(0);
     });
 
-    // 6. 2 increase + decrease functionality check together
+    // 6. increase + decrease functionality check together
     test("Increase button should work", () => {
-        let button = wrapper.findAll("button");
-        let increaseButton;
-        let decreaseButton
-        for (let i = 0; i < 2; i++) {
-            if (button.at(i).element.textContent === "Increase") {
-                increaseButton = button.at(i);
-            } else if (button.at(i).element.textContent === "Decrease") {
-                decreaseButton = button.at(i);
-            }
-        }
+        // finds the Increase button
+        let increaseButton = findButton(wrapper, "Increase");
+        // finds the Decrease button
+        let decreaseButton = findButton(wrapper, "Decrease");
         // Triggers the Increase button five times
         state.count = 0;
-        let count = 0;
-        for (let i = 0; i < 5; i++) {
-            button.trigger("click");
-            count++;
-        }
+        triggerButton(increaseButton, 5);
         // Triggers the Decrease button five times
-        for (let i = 0; i < 5; i++) {
-            button.trigger("click");
-            count--;
-        }
-        expect(state.count).toEqual(count);
+        triggerButton(decreaseButton, 5);
+        expect(state.count).toEqual(0);
     });
 
     // 7. Count text show check
@@ -128,3 +70,45 @@ describe("Counter.vue", () => {
     });
 
 });
+
+// function for shallow mounting the Counter component using localVue
+function shallowMountComponent(Component) {
+    const localVue = createLocalVue();
+    localVue.use(Vuex);
+    return shallowMount(Component, {
+        localVue,
+        store: new Vuex.Store({
+            state,
+            getters,
+            mutations,
+            actions
+        })
+    });
+}
+
+// finds the increase/decrease buttons
+function findButton(wrapper, button) {
+    let btn = wrapper.findAll("button");
+    for (let i = 0; i < btn.length; i++) {
+        if (btn.at(i).element.textContent === button) {
+            return btn.at(i);
+        }
+    }
+}
+
+// finds the increase/decrease buttons' text
+function findButtonText(wrapper, button) {
+    let btn = wrapper.findAll("button");
+    for (let i = 0; i < btn.length; i++) {
+        if (btn.at(i).element.textContent === button) {
+            return btn.at(i).element.textContent;
+        }
+    }
+}
+
+// triggers the increase/decrease buttons
+function triggerButton(button, times) {
+    for (let i = 0; i < times; i++) {
+        button.trigger("click");
+    }
+}
