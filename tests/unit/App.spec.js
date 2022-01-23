@@ -1,12 +1,11 @@
 import {createLocalVue, mount} from "@vue/test-utils";
 import App from "../../src/App";
 import Vuex from "vuex";
-import {state, getters, mutations, actions} from "../../src/store";
+import {state, getters} from "../../src/store";
 
 // Test case for App.vue
 describe("App.vue", () => {
 
-    // mounts App.vue before each test.
     let wrapper;
     beforeEach(() => {
         wrapper = mountComponent(App);
@@ -26,51 +25,63 @@ describe("App.vue", () => {
     });
 
     // 3. notificationArea class check based on getCount value
-    test("notificationArea class check based on getCount value", async () => {
+    describe("notificationArea class check based on getCount value", () => {
 
         // looks for safe class
-        const safe = "safe";
-        const safeClass = findClass(wrapper, safe);
-        expect(safeClass).toEqual(safe);
+        test("notificationArea should include safe class", async () => {
+            const safe = "safe";
+            const safeClass = findClass(wrapper, safe);
+            expect(safeClass).toEqual(safe);
+        });
 
         // looks for normal class
-        state.count = 5;
-        await wrapper.vm.$nextTick();
-        const normal = "normal";
-        const normalClass = findClass(wrapper, normal);
-        expect(normalClass).toEqual(normal);
+        test("notificationArea should include normal class", async () => {
+            wrapper.vm.$store.state.count = 5;
+            await wrapper.vm.$nextTick();
+            const normal = "normal";
+            const normalClass = findClass(wrapper, normal);
+            expect(normalClass).toEqual(normal);
+        });
 
         // looks for danger class
-        state.count = 10;
-        await wrapper.vm.$nextTick();
-        const danger = "danger";
-        const dangerClass = findClass(wrapper, danger);
-        expect(dangerClass).toEqual(danger);
+        test("notificationArea should include danger class", async () => {
+            wrapper.vm.$store.state.count = 10;
+            await wrapper.vm.$nextTick();
+            const danger = "danger";
+            const dangerClass = findClass(wrapper, danger);
+            expect(dangerClass).toEqual(danger);
+        });
     });
 
     // 4. notificationArea text message check
-    test("notificationArea text message check", async () => {
+    describe("notificationArea text message check", () => {
 
         // Looks for safe text
-        state.count = 0;
-        await wrapper.vm.$nextTick();
-        const safeMessage = `So safe. Case count is ${state.count}k`;
-        const safeText = findText(wrapper, safeMessage);
-        expect(safeText).toEqual(safeMessage);
+        test("notificationArea text message should include safe text", async () => {
+            wrapper.vm.$store.state.count = 0;
+            await wrapper.vm.$nextTick();
+            const safeMessage = `So safe. Case count is ${state.count}k`;
+            const safeText = findText(wrapper, safeMessage);
+            expect(safeText).toEqual(safeMessage);
+        });
 
         // Looks for normal text
-        state.count = 5;
-        await wrapper.vm.$nextTick();
-        const normalMessage = `Life is normal. Case count is ${state.count}k`;
-        const normalText = findText(wrapper, normalMessage);
-        expect(normalText).toEqual(normalMessage);
+        test("notificationArea text message should include normal text", async () => {
+            wrapper.vm.$store.state.count = 5;
+            await wrapper.vm.$nextTick();
+            const normalMessage = `Life is normal. Case count is ${state.count}k`;
+            const normalText = findText(wrapper, normalMessage);
+            expect(normalText).toEqual(normalMessage);
+        });
 
         // Looks for danger text
-        state.count = 10;
-        await wrapper.vm.$nextTick();
-        const message = `Danger!!! Case count is ${state.count}k`;
-        const dangerText = findText(wrapper, message);
-        expect(dangerText).toEqual(message);
+        test("notificationArea text message should include danger text", async () => {
+            wrapper.vm.$store.state.count = 10;
+            await wrapper.vm.$nextTick();
+            const message = `Danger!!! Case count is ${state.count}k`;
+            const dangerText = findText(wrapper, message);
+            expect(dangerText).toEqual(message);
+        });
     });
 });
 
@@ -82,9 +93,7 @@ function mountComponent(Component) {
         localVue,
         store: new Vuex.Store({
             state,
-            getters,
-            mutations,
-            actions
+            getters
         })
     });
 }

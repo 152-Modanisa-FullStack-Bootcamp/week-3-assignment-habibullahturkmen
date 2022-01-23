@@ -6,7 +6,6 @@ import {state, getters, mutations, actions} from "../../src/store"
 // Test case for Counter.vue
 describe("Counter.vue", () => {
 
-    // shallow mounts Counter.vue component before each test.
     let wrapper;
     beforeEach(() => {
         wrapper = shallowMountComponent(Counter);
@@ -31,46 +30,31 @@ describe("Counter.vue", () => {
 
     // 4. Increase button functionality check
     test("Increase button should work", () => {
-        // finds the Increase button
         let increaseButton = findButton(wrapper, "Increase");
-        // Triggers the Increase button five times
-        state.count = 0;
         triggerButton(increaseButton, 5);
-        expect(state.count).toEqual(5);
-        // expect(wrapper.vm.$store.state.count).toEqual(5); // Optional expect
+        expect(wrapper.vm.$store.state.count).toEqual(5);
     });
 
     // 5. Decrease button functionality check
     test("Decrease button should work", () => {
-        // finds the Decrease button
         let decreaseButton = findButton(wrapper, "Decrease");
-        // Triggers the Decrease button five times
-        state.count = 5;
         triggerButton(decreaseButton, 5);
-        expect(state.count).toEqual(0);
-        // expect(wrapper.vm.$store.state.count).toEqual(0); // Optional expect
+        expect(wrapper.vm.$store.state.count).toEqual(0);
     });
 
-    // 6. increase + decrease functionality check together
-    test("increase + decrease button should work", () => {
-        // finds the Increase button
+    // 6. 2 increase + 1 decrease functionality check together
+    test("2 increase + 1 decrease functionality check together", () => {
         let increaseButton = findButton(wrapper, "Increase");
-        // finds the Decrease button
         let decreaseButton = findButton(wrapper, "Decrease");
-        // Triggers the Increase button five times
-        state.count = 0;
-        triggerButton(increaseButton, 5);
-        // Triggers the Decrease button five times
-        triggerButton(decreaseButton, 5);
-        expect(state.count).toEqual(0);
-        // expect(wrapper.vm.$store.state.count).toEqual(0); // Optional expect
+        triggerButton(increaseButton, 2);
+        triggerButton(decreaseButton, 1);
+        expect(wrapper.vm.$store.state.count).toEqual(1);
     });
 
     // 7. Count text show check
     test("Count text should show", () => {
         const text = wrapper.find("span").text();
-        expect(text).toEqual(`${state.count}k`);
-        expect(text).toEqual(`${wrapper.vm.$store.state.count}k`); // Optional expect
+        expect(text).toEqual(`${wrapper.vm.$store.state.count}k`);
     });
 
 });
