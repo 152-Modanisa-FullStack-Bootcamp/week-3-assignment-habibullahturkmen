@@ -1,7 +1,7 @@
 import {shallowMount, createLocalVue} from "@vue/test-utils";
 import Counter from "../../src/Counter";
 import Vuex from "vuex";
-import {state, getters, mutations, actions} from "../../src/store"
+import {state, getters, mutations, actions} from "../../src/store";
 
 // Test case for Counter.vue
 describe("Counter.vue", () => {
@@ -37,9 +37,10 @@ describe("Counter.vue", () => {
 
     // 5. Decrease button functionality check
     test("Decrease button should work", () => {
+        wrapper.vm.$store.state.count = 10;
         let decreaseButton = findButton(wrapper, "Decrease");
         triggerButton(decreaseButton, 5);
-        expect(wrapper.vm.$store.state.count).toEqual(0);
+        expect(wrapper.vm.$store.state.count).toEqual(5);
     });
 
     // 6. 2 increase + 1 decrease functionality check together
@@ -66,7 +67,7 @@ function shallowMountComponent(Component) {
     return shallowMount(Component, {
         localVue,
         store: new Vuex.Store({
-            state,
+            state: JSON.parse(JSON.stringify(state)),
             getters,
             mutations,
             actions

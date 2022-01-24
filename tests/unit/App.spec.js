@@ -56,29 +56,28 @@ describe("App.vue", () => {
     // 4. notificationArea text message check
     describe("notificationArea text message check", () => {
 
-        // Looks for safe text
-        test("notificationArea text message should include safe text", async () => {
-            wrapper.vm.$store.state.count = 0;
+        // Looks for "So safe" text
+        test("notificationArea text message should include 'So safe' text", async () => {
             await wrapper.vm.$nextTick();
-            const safeMessage = `So safe. Case count is ${state.count}k`;
+            const safeMessage = "So safe. Case count is 0k";
             const safeText = findText(wrapper, safeMessage);
             expect(safeText).toEqual(safeMessage);
         });
 
-        // Looks for normal text
-        test("notificationArea text message should include normal text", async () => {
+        // Looks for "Life is normal" text
+        test("notificationArea text message should include 'Life is normal' text", async () => {
             wrapper.vm.$store.state.count = 5;
             await wrapper.vm.$nextTick();
-            const normalMessage = `Life is normal. Case count is ${state.count}k`;
+            const normalMessage = "Life is normal. Case count is 5k";
             const normalText = findText(wrapper, normalMessage);
             expect(normalText).toEqual(normalMessage);
         });
 
-        // Looks for danger text
-        test("notificationArea text message should include danger text", async () => {
+        // Looks for "Danger!!!" text
+        test("notificationArea text message should include 'danger' text", async () => {
             wrapper.vm.$store.state.count = 10;
             await wrapper.vm.$nextTick();
-            const message = `Danger!!! Case count is ${state.count}k`;
+            const message = "Danger!!! Case count is 10k";
             const dangerText = findText(wrapper, message);
             expect(dangerText).toEqual(message);
         });
@@ -92,7 +91,7 @@ function mountComponent(Component) {
     return mount(Component, {
         localVue,
         store: new Vuex.Store({
-            state,
+            state: JSON.parse(JSON.stringify(state)),
             getters
         })
     });
